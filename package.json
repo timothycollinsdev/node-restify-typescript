@@ -1,0 +1,21 @@
+{
+  "name": "rest-api",
+  "version": "1.0.0",
+  "description": "Restify nodejs with typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bunyan": "0.0.36",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.1.7",
+    "typescript": "^2.3.3"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.10",
+    "restify": "^4.3.0"
+  }
+}
