@@ -2,11 +2,13 @@
 import {Controller} from './common/controller';
 import {HelloWorldController} from './controllers/hello_world';
 import { SquareController} from './controllers/square';
+import {DeviceController} from './controllers/devices'
 
 import server from './common/server';
 class ApplicationBootstrap {
   constructor() {
     this.bind(HelloWorldController);
+    this.bind(DeviceController);
     this.bind(SquareController);
   }
 
