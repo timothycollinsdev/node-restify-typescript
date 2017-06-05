@@ -1,20 +1,30 @@
+import { Server } from 'restify';
 
-import {Controller} from './common/controller';
-import {HelloWorldController} from './controllers/hello_world';
-import { SquareController} from './controllers/square';
-import {DeviceController} from './controllers/devices'
+import {ApiLogger} from './common/logger';
+import {Route} from './common/route';
+import {HelloWorldRoute} from './routes/hello_world_route';
+import { SquareRoute} from './routes/square_route';
+import { ConfigServer } from './common/server';
 
-import server from './common/server';
 class ApplicationBootstrap {
+  private server: Server;
   constructor() {
-    this.bind(HelloWorldController);
-    this.bind(DeviceController);
-    this.bind(SquareController);
+    let logger = new ApiLogger();
+
+    let loggerDetails = logger.createLogger();
+
+    this.server = new ConfigServer().createServer(loggerDetails.get(ApiLogger.apiLoggerName),
+    loggerDetails.get(ApiLogger.auditLoggerName));
+
+    this.register(HelloWorldRoute);
+    this.register(SquareRoute);
   }
 
 
-  private bind<T extends Controller>(type:{ new(server): T; }): T{
-      return new type(server);
+  private register<T extends Route>(type:{ new(server): T; }): T{
+      let route = new type(this.server);
+      route.init();
+      return route;
   }
 }
 

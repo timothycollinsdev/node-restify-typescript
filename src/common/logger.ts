@@ -1,16 +1,25 @@
-import * as bunyan from 'bunyan'
+import {createLogger} from 'bunyan'
 
-class Logger {
-    public appLog;
-    public auditLog;
+export class ApiLogger {
+    static readonly auditLoggerName = "ConfigServiceAuditLogger";
+    static readonly apiLoggerName = "ConfigServiceLogger";
 
-    constructor() {
-        this.appLog = bunyan.createLogger({ name: 'myapp', level: 'debug' });
-        this.auditLog = bunyan.createLogger({
-            name: 'audit',
+
+    public createLogger() : Map<String, any> {
+
+        let appLog = createLogger({name: ApiLogger.apiLoggerName, level: 'debug'});
+
+        let auditLog = createLogger({
+            name: ApiLogger.auditLoggerName,
             stream: process.stdout
         });
+
+        let loggerMap = new Map();
+        loggerMap.set(ApiLogger.apiLoggerName, appLog);
+        loggerMap.set(ApiLogger.auditLoggerName, auditLog);
+
+        return loggerMap;
     }
 }
 
-export default new Logger()
+

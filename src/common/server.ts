@@ -1,40 +1,37 @@
-import logger from './logger'
+import { ApiLogger } from './logger'
 import * as restify from 'restify';
 
-class Server {
-    public server: restify.Server;
-    constructor() {
-        this.init();
-    }
-    private init() {
+export class ConfigServer {
+
+    public createServer(appLogger, auditLogger) : restify.Server {
         let srvr = restify.createServer({
             name: "My Rest API",
-            log: logger.appLog
+            log: appLogger
         });
 
 
         //restify.CORS.ALLOW_HEADERS.push('authorization');
 
         this.addMiddlewares(srvr);
-        this.addAuditLogger(srvr);
+        this.addAuditLogger(srvr, auditLogger);
         this.addListener(srvr);
 
-        this.server = srvr;
+        return srvr;
     }
 
-    private addListener(srvr): void {
+    private addListener(srvr: restify.Server): void {
         srvr.listen(8888, function () {
             srvr.log.info(`INFO: My rest api is running at ${srvr.url}`);
         });
     }
 
-    private addAuditLogger(srvr): void {
+    private addAuditLogger(srvr: restify.Server, auditLogger): void {
         srvr.on('after', restify.auditLogger({
-            log: logger.auditLog
+            log: auditLogger
         }));
     }
 
-    private addMiddlewares(srvr): void {
+    private addMiddlewares(srvr: restify.Server): void {
         srvr.use(restify.CORS());
         srvr.pre(restify.pre.sanitizePath());
         srvr.use(restify.acceptParser(srvr.acceptable));
@@ -52,5 +49,3 @@ class Server {
 
     }
 }
-
-export default new Server().server;
